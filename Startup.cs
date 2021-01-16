@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using dotnet.boilerplate.Helpers;
 using dotnet.boilerplate.Persistance;
 using dotnet.boilerplate.Persistance.Configurations;
 using dotnet.boilerplate.Persistance.IRepositories;
@@ -55,7 +57,7 @@ namespace dotnet.boilerplate
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
-                              .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                              .GetBytes(Configuration.GetSection("AppSettings:SECRET_PWD_KEY").Value)),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
@@ -64,7 +66,31 @@ namespace dotnet.boilerplate
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "dotnet.boilerplate", Version = "v1" });
+
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Name = "JWT Authentication",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
             });
+
             services.AddControllers();
         }
 
@@ -75,15 +101,15 @@ namespace dotnet.boilerplate
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "dotnet.boilerplate v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Boiler Plate V1"));
             }
 
             // app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 

@@ -8,14 +8,18 @@ using dotnet.boilerplate.Helpers;
 using dotnet.boilerplate.Helpers.Params;
 using dotnet.boilerplate.Models;
 using dotnet.boilerplate.Persistance.IRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet.boilerplate.Controllers
 {
+
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
+    // [Authorize(Roles = "Bus Time.R, Administrator")]
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;

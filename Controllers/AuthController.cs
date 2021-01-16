@@ -74,16 +74,38 @@ namespace dotnet.boilerplate.Controllers
 
             var claims = new List<Claim>();
             claims.Add(new Claim("Id", userId));
+            // claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+
+            // if (userLogin.AdminStatus == true)
+            // {
+            //     claims.Add(new Claim(ClaimTypes.Role, "Administrator"));
+            // }
+
+            // foreach (UserModuleRight userModule in userModules)
+            // {
+            //     var right = await moduleRightsRepository.GetOne(userModule.ModuleRightsId);
+            //     var claim = right.Description.ToString();
+
+            //     if (userModule.Read == true)
+            //     {
+            //         claims.Add(new Claim(ClaimTypes.Role, $"{claim}.R"));
+            //     }
+
+            //     if (userModule.Write == true)
+            //     {
+            //         claims.Add(new Claim(ClaimTypes.Role, $"{claim}.W"));
+            //     }
+            // }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8
-                    .GetBytes(this.config.GetSection("AppSettings:Token").Value));
+                    .GetBytes(this.config.GetSection("AppSettings:SECRET_PWD_KEY").Value));
 
             var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddHours(1),
+                Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = credential
             };
 
