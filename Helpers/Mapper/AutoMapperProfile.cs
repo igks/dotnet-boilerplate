@@ -8,10 +8,12 @@ namespace dotnet.boilerplate.Helpers.Mapper
     {
         public AutoMapperProfile()
         {
+            CreateMap<RegisterDto, User>();
+            CreateMap<LoginDto, User>();
+
             CreateMap<User, ViewUserDto>();
             CreateMap<AddUserDto, User>();
             CreateMap<EditUserDto, User>();
-            CreateMap<RegisterDto, User>();
         }
     }
 }

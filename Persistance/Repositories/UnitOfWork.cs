@@ -23,7 +23,7 @@ namespace dotnet.boilerplate.Persistance.Repositories
             }
             catch (DbUpdateException ex)
             {
-                // Console.WriteLine(ex);
+                Console.WriteLine(ex);
                 saveResult = 0;
             }
             return saveResult > 0;

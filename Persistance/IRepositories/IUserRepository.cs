@@ -8,7 +8,6 @@ namespace dotnet.boilerplate.Persistance.IRepositories
 {
     public interface IUserRepository
     {
-        Task<User> Login(string email, string password);
         Task<IEnumerable<User>> GetAll();
         Task<User> GetById(int id);
         Task<User> GetByEmail(string email);

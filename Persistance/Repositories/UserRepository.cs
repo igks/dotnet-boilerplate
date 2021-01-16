@@ -20,38 +20,9 @@ namespace dotnet.boilerplate.Persistance.Repositories
             _context = context;
         }
 
-        public async Task<User> Login(string email, string password)
-        {
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
-
-            if (user != null)
-            {
-                if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-                {
-                    user = null;
-                }
-            }
-
-            return user;
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != passwordHash[i]) return false;
-                }
-                return true;
-            }
-        }
-
         public async Task<IEnumerable<User>> GetAll()
         {
-            var users = await _context.User.ToListAsync();
-            return users;
+            return await _context.User.ToListAsync();
         }
 
         public async Task<User> GetById(int id)
@@ -61,8 +32,7 @@ namespace dotnet.boilerplate.Persistance.Repositories
 
         public async Task<User> GetByEmail(string email)
         {
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
-            return user;
+            return await _context.User.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<PagedList<User>> GetPaged(UserParams userParams)
